@@ -23,13 +23,19 @@ app.get("/urls/new", (request, response) => {
   response.render("urls_new");
 });
 
-//after input generate random string/ puts into database / redirects the pg
+//after input generate random string
 app.post("/urls/new", (request, response) => {
   let shortRandomURL = randomString();
 
   urlDatabase[shortRandomURL] = request.body.longURL;
   response.redirect("/u/" + shortRandomURL);
+})
 
+
+app.post("/urls/:id/delete", (request,response) => {
+
+  delete urlDatabase[request.params.id];
+  response.redirect("/urls")
 })
 
 app.get("/u/:shortURL", (request, response) => {
@@ -48,6 +54,13 @@ app.get("/urls/:id", (request, response) => {
 app.listen(PORT, () => {
   console.log(`Example app is listening on port ${PORT}`)
 });
+
+
+
+
+
+
+
 
 function randomString() {
   var random = '';

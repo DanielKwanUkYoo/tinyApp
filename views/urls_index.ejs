@@ -7,12 +7,15 @@
     <% include ./partials/_header.ejs %>
 </header>
 <body>
-  <ul>
-    <% for (var link in urls) { %>
-      <li>
-        <%= link + ': '+ urls[link] %>
-      </li>
-    <% } %>
-  </ul>
+    <ul>
+      <% for (var link in urls) { %>
+        <li>
+          <form method="POST" action="/urls/<%= link %>/delete">
+            <%= link + ': '+ urls[link] %>
+            <input type="submit" value="delete">
+          </form>
+        </li>
+      <% } %>
+    </ul>
 </body>
 </html>
