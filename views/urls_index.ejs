@@ -7,12 +7,16 @@
     <% include ./partials/_header.ejs %>
 </header>
 <body>
+  <a href="/urls/new"> Add New Page </a>
     <ul>
       <% for (var link in urls) { %>
         <li>
+
           <form method="POST" action="/urls/<%= link %>/delete">
             <%= link + ': '+ urls[link] %>
+            <a href="/urls/<%= link %>"> edit</a>
             <input type="submit" value="delete">
+
           </form>
         </li>
       <% } %>

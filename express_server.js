@@ -28,13 +28,18 @@ app.post("/urls/new", (request, response) => {
   let shortRandomURL = randomString();
 
   urlDatabase[shortRandomURL] = request.body.longURL;
-  response.redirect("/u/" + shortRandomURL);
+  response.redirect("/urls");
 })
 
-
+//Delete
 app.post("/urls/:id/delete", (request,response) => {
-
   delete urlDatabase[request.params.id];
+  response.redirect("/urls")
+})
+
+//Edit/Add
+app.post("/urls/:id", (request,response) => {
+  urlDatabase[request.params.id] = request.body.newURL;
   response.redirect("/urls")
 })
 
@@ -46,7 +51,7 @@ app.get("/u/:shortURL", (request, response) => {
 //browser dir
 app.get("/urls/:id", (request, response) => {
   let templateVars = { shortURL: request.params.id,
-                       regURL: urlDatabase
+                       dataKey: urlDatabase
                      };
   response.render("urls_show", templateVars)
 })
