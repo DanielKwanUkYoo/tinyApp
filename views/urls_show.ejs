@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+</head>
+<header>
+    <% include ./partials/_header.ejs %>
+</header>
+<body>
+  <!-- <% for (var link in regURL) { %> -->
+    <% if (shortURL === link) {%>
+      <%= shortURL + ': ' + regURL[link] %>
+      <% } %>
+  <!-- <% } %> -->
+
+</body>
+</html>

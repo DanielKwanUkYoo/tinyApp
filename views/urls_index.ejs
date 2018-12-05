@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang = "en">
+<head>
+  <title>TinyApp</title>
+</head>
+<header>
+    <% include ./partials/_header.ejs %>
+</header>
+<body>
+  <ul>
+    <% for (var link in urls) { %>
+      <li>
+        <%= link + ': '+ urls[link] %>
+      </li>
+    <% } %>
+  </ul>
+</body>
+</html>
