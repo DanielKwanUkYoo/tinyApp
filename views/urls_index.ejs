@@ -4,10 +4,11 @@
   <title>TinyApp</title>
 </head>
 <header>
+
     <% include ./partials/_header.ejs %>
+
 </header>
 <body>
-  <a href="/urls/new"> Add New Page </a>
     <ul>
       <% for (var link in urls) { %>
         <li>
@@ -21,5 +22,6 @@
         </li>
       <% } %>
     </ul>
+   <a href="/urls/new"> Add New Page </a>
 </body>
 </html>

@@ -7,7 +7,21 @@ app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 
-//route?
+//Database
+var users = {
+  "userRandomID": {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur"
+  },
+  "user2RandomID": {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "dishwasher-funk"
+  }
+}
+
+
 var urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
@@ -16,15 +30,24 @@ var urlDatabase = {
 
 //url pg
 app.get("/urls", (request, response) => {
-  const username = request.cookies["username"];
-  let templateVars = { urls: urlDatabase, username: username };
+  let userId = request.cookies["user_id"];
+  let userObject = users[userId];
+  let templateVars = {
+    urls: urlDatabase,
+    user: userObject,
+  };
   response.render("urls_index", templateVars);
+  // console.log(request.cookies.user_id);
 });
+
+app.get("/login", (request, response) => {
+  response.render("urls_login")
+})
 
 //client input pg
 app.get("/urls/new", (request, response) => {
-  const username = request.cookies["username"];
-  let templateVars = { username: username };
+  // const username = request.cookies["username"];
+  let templateVars = { user: request.cookies["user_id"] };
   response.render("urls_new", templateVars);
 });
 
@@ -37,16 +60,74 @@ app.post("/urls/new", (request, response) => {
 })
 
 //login/setting cookie
-app.post("/urls/login", (request, response) => {
-  response.cookie("username", request.body.username);
-  response.redirect("/urls");
+app.post("/login", (request, response) => {
+  const userEmail = request.body.email;
+  const userPass = request.body.password;
+
+  if (userEmail === "" || userPass === "") {
+    response.status(400).end();
+    return;
+  }
+
+  var existingUser = false;
+  for (var id in users) {
+    if (userEmail === users[id]["email"]) {
+      existingUser = users[id];
+    }
+  }
+  if (existingUser) {
+    if (userPass === existingUser.password) {
+      response.cookie("user_id", existingUser.id);
+      response.redirect("/urls");
+    } else {
+    response.status(400).end();
+    }
+  }
 })
 
 //logout clearcookies
 app.post("/urls/logout", (request, response) => {
-  response.clearCookie("username");
+  response.clearCookie("user_id"); // clearing cookies
   response.redirect("/urls");
 })
+
+//register email
+app.get("/register", (request, response) => {
+  // const username = req
+  response.render("urls_register")
+})
+
+//saves Registered data to userdatabase & user_id cookie
+app.post("/register", (request, response) => {
+  const userEmail = request.body.email;
+  const userPass = request.body.password;
+
+  if (userEmail === "" || userPass === "") {
+    response.status(400).end();
+    return;
+  }
+
+  var existingUser = false;
+  for (var id in users) {
+    if (userEmail === users[id]["email"]) {
+      existingUser = users[id];
+    }
+  }
+  if (existingUser) {
+    response.status(400).end();
+  } else {
+    let userID = randomString();
+    let register = {
+      id: userID,
+      email: userEmail,
+      password: userPass
+    };
+    users[userID] = register
+    response.cookie("user_id", userID);
+    response.redirect("/urls");
+  }
+});
+
 
 
 //Delete
@@ -71,10 +152,11 @@ app.get("/urls/:id", (request, response) => {
   const username = request.cookies["username"];
   let templateVars = { shortURL: request.params.id,
                        dataKey: urlDatabase,
-                       username: username
+                       user:request.cookies["user_id"]
                      };
   response.render("urls_show", templateVars);
 })
+
 
 app.listen(PORT, () => {
   console.log(`Example app is listening on port ${PORT}`);
