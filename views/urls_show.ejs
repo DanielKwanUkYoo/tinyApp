@@ -7,11 +7,11 @@
     <% include ./partials/_header.ejs %>
 </header>
 <body>
-  <!-- <% for (var link in regURL) { %> -->
-    <% if (shortURL === link) {%>
-      <%= shortURL + ': ' + regURL[link] %>
-      <% } %>
-  <!-- <% } %> -->
+  <form action="" method="POST">
+      <input name="newURL" type="text"
+      placeholder="<%= dataKey[shortURL] %>" style="width: 300px;">
+      <input type="submit" value="update">
+  </form>
 
 </body>
 </html>

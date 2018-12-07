@@ -4,6 +4,23 @@
   <title></title>
 </head>
 <body>
-  <h1>HEADER</h1>
+
+    <% if (username.user_id) { %>
+
+      <form method="POST" action="/urls/logout">
+      Welcome <strong><%= username.user_id %></strong>
+      <input type="submit" value="Logout">
+      </form>
+
+    <% } else { %>
+      <a href="/urls/login">login</a>
+      <a href="/urls/register">register</a>
+
+    <% } %>
 </body>
 </html>
+
+
+
+
+
