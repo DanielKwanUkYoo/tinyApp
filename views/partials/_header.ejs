@@ -5,17 +5,16 @@
 </head>
 <body>
 
-    <% if (username.user_id) { %>
+    <% if (user) { %>
 
       <form method="POST" action="/urls/logout">
-      Welcome <strong><%= username.user_id %></strong>
+      Welcome <strong><%= user.email %></strong>
       <input type="submit" value="Logout">
       </form>
 
     <% } else { %>
-      <a href="/urls/login">login</a>
-      <a href="/urls/register">register</a>
-
+      <a href="/login">login</a>
+      <a href="/register">register</a>
     <% } %>
 </body>
 </html>

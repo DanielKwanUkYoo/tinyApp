@@ -6,7 +6,6 @@ const cookieParser = require("cookie-parser")
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
-<<<<<<< HEAD
 
 //Database
 var users = {
@@ -22,8 +21,6 @@ var users = {
   }
 }
 
-=======
->>>>>>> c6d92c22a2738ae54b1235bef611cd6988278541
 
 var urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
@@ -33,34 +30,24 @@ var urlDatabase = {
 
 //url pg
 app.get("/urls", (request, response) => {
-<<<<<<< HEAD
   let userId = request.cookies["user_id"];
   let userObject = users[userId];
   let templateVars = {
     urls: urlDatabase,
     user: userObject,
   };
-=======
-  const username = request.cookies["username"];
-  let templateVars = { urls: urlDatabase, username: username };
->>>>>>> c6d92c22a2738ae54b1235bef611cd6988278541
   response.render("urls_index", templateVars);
   // console.log(request.cookies.user_id);
 });
 
-app.get("/urls/login", (request, response) => {
+app.get("/login", (request, response) => {
   response.render("urls_login")
 })
 
 //client input pg
 app.get("/urls/new", (request, response) => {
-<<<<<<< HEAD
   // const username = request.cookies["username"];
-  let templateVars = { username: request.cookies };
-=======
-  const username = request.cookies["username"];
-  let templateVars = { username: username };
->>>>>>> c6d92c22a2738ae54b1235bef611cd6988278541
+  let templateVars = { user: request.cookies["user_id"] };
   response.render("urls_new", templateVars);
 });
 
@@ -73,8 +60,7 @@ app.post("/urls/new", (request, response) => {
 })
 
 //login/setting cookie
-app.post("/urls/login", (request, response) => {
-<<<<<<< HEAD
+app.post("/login", (request, response) => {
   const userEmail = request.body.email;
   const userPass = request.body.password;
 
@@ -106,13 +92,13 @@ app.post("/urls/logout", (request, response) => {
 })
 
 //register email
-app.get("/urls/register", (request, response) => {
+app.get("/register", (request, response) => {
   // const username = req
   response.render("urls_register")
 })
 
 //saves Registered data to userdatabase & user_id cookie
-app.post("/urls/register", (request, response) => {
+app.post("/register", (request, response) => {
   const userEmail = request.body.email;
   const userPass = request.body.password;
 
@@ -143,18 +129,6 @@ app.post("/urls/register", (request, response) => {
 });
 
 
-=======
-  response.cookie("username", request.body.username);
-  response.redirect("/urls");
-})
-
-//logout clearcookies
-app.post("/urls/logout", (request, response) => {
-  response.clearCookie("username");
-  response.redirect("/urls");
-})
-
->>>>>>> c6d92c22a2738ae54b1235bef611cd6988278541
 
 //Delete
 app.post("/urls/:id/delete", (request,response) => {
@@ -178,11 +152,7 @@ app.get("/urls/:id", (request, response) => {
   const username = request.cookies["username"];
   let templateVars = { shortURL: request.params.id,
                        dataKey: urlDatabase,
-<<<<<<< HEAD
-                       username: request.cookies
-=======
-                       username: username
->>>>>>> c6d92c22a2738ae54b1235bef611cd6988278541
+                       user:request.cookies["user_id"]
                      };
   response.render("urls_show", templateVars);
 })
