@@ -5,22 +5,22 @@
 </head>
 <body>
 
-    <% if (username) { %>
+    <% if (username.user_id) { %>
 
       <form method="POST" action="/urls/logout">
-      Welcome <strong><%= username %></strong>
+      Welcome <strong><%= username.user_id %></strong>
       <input type="submit" value="Logout">
       </form>
 
     <% } else { %>
-
-    <form method="POST" action="/urls/login">
-      <input type="text" name="username">
-      <input type="submit" value="Sign in" />
-    </form>
+      <a href="/urls/login">login</a>
+      <a href="/urls/register">register</a>
 
     <% } %>
 </body>
 </html>
+
+
+
 
 
