@@ -3,6 +3,8 @@ const PORT = 8080;
 const app = express();
 const bodyParser = require("body-parser")
 const cookieParser = require("cookie-parser")
+const bcrypt = require('bcrypt');
+
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
@@ -67,14 +69,12 @@ app.post("/urls", (request, response) => {
     urlDatabase[userID][shortRandomURL] = userInputLong;
     response.redirect("/urls");
   }
-
 })
 
 //login/setting cookie
 app.post("/login", (request, response) => {
   const userEmail = request.body.email;
   const userPass = request.body.password;
-
   if (userEmail === "" || userPass === "") {
     response.status(400).end();
     return;
@@ -86,8 +86,9 @@ app.post("/login", (request, response) => {
       existingUser = users[id];
     }
   }
+
   if (existingUser) {
-    if (userPass === existingUser.password) {
+    if (bcrypt.compareSync(userPass, existingUser.password)) {
       response.cookie("user_id", existingUser.id);
       response.redirect("/urls");
     } else {
@@ -96,7 +97,7 @@ app.post("/login", (request, response) => {
   } else {
     response.status(400).end();
   }
-})
+});
 
 //logout clearcookies
 app.post("/urls/logout", (request, response) => {
@@ -115,7 +116,6 @@ app.get("/register", (request, response) => {
 app.post("/register", (request, response) => {
   const userEmail = request.body.email;
   const userPass = request.body.password;
-
   if (userEmail === "" || userPass === "") {
     response.status(400).end();
     return;
@@ -134,7 +134,7 @@ app.post("/register", (request, response) => {
     let register = {
       id: userID,
       email: userEmail,
-      password: userPass
+      password: bcrypt.hashSync(request.body.password, 12)
     };
     urlDatabase[userID] = {};
     users[userID] = register
@@ -142,8 +142,6 @@ app.post("/register", (request, response) => {
     response.redirect("/urls");
   }
 });
-
-
 
 //Delete
 app.post("/urls/:id/delete", (request,response) => {
