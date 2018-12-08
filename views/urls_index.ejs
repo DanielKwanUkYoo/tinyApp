@@ -12,6 +12,7 @@
     <h2><strong>Welcome to TinyApp!!</strong></h2>
         <% for (var link in urls) { %>
           <% if (user) { %>
+          <h1>USER LOGGED IN</h1>
           <ul>
             <li>
               <form method="POST" action="/urls/<%= link %>/delete">
@@ -22,14 +23,16 @@
               </form>
             </li>
           </ul>
-        <% } else { %>
-        <li><%= link + ' : ' %> <a href="/u/<%= link %>">
-            <%= urls[link] %></a>
-        </li>
         <% } %>
         <% } %>
     <form action="/urls/new" method="GET" name="AddNew">
       <input type="submit" value=AddNew>
     </form>
+    <p>ShortUrls!</p>
+    <% shortUrl.forEach(function (element) { %>
+
+    <%= element %>
+    <% }) %>
+
 </body>
 </html>

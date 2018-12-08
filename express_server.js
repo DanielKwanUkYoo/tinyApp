@@ -22,15 +22,22 @@ var urlDatabase = {
     "b2xVn2": "http://www.lighthouselabs.ca",
     "9sm5xK": "http://www.google.com"
   }
-
 };
 
-//url pg
+//Index Page
 app.get("/urls", (request, response) => {
   let userID = request.cookies["user_id"];
   let userObject = users[userID];
+  let shortUrls = [];
+  for (let x in urlDatabase) {
+    for (let shortUrl in urlDatabase[x]) {
+      shortUrls.push(shortUrl)
+    }
+  }
+
   let templateVars = {
     urls: urlDatabase[userID],
+    shortUrl: shortUrls,
     user: userObject,
   };
   response.render("urls_index", templateVars);
@@ -153,48 +160,21 @@ app.post("/urls/:id", (request,response) => {
   response.redirect("/urls");
 })
 
-// var urlDatabase = {
-//   "userRandomID": {
-//     "b2xVn2": "http://www.lighthouselabs.ca",
-//     "9sm5xK": "http://www.google.com"
-//   }
-
 
 
 app.get("/u/:shortURL", (request, response) => {
   const shortRandomURL = request.params.shortURL;
   const userID = request.cookies["user_id"];
-  console.log(urlDatabase);
   let keyFound = ""
   for (owner in urlDatabase) {
     if (userID === owner) {
       for (data in urlDatabase[owner]) {
         if (data === shortRandomURL) {
           response.redirect(urlDatabase[owner][data])
-          // response.redirect(data[shortRandomURL]);
         }
       }
     }
   }
-  // }  console.log(owner)
-  //   if (keyFound === owner) {
-  //     for (data in urlDatabase[owner]) {
-
-  //       if (data === shortRandomURL) {
-  //         console.log(data[shortRandomURL])
-  //         response.redirect(data[shortRandomURL])
-  //       }
-  //     }
-  //   }
-
-
-
-  // }
-  // if (request.params.id === urlDatabase[userID]) {
-  //   response.redirect(longURL)
-  // }
-
-  // response.redirect(longURL);
 })
 
 //browser dir
