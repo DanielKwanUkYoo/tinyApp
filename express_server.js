@@ -163,16 +163,6 @@ app.get("/u/:shortURL", (request, response) => {
   }
 });
 
-//browser dir
-// app.get("/urls/:id", (request, response) => {
-//   const username = request.cookies["username"];
-//   let templateVars = { shortURL: request.params.id,
-//                        user:request.cookies["user_id"]
-//                      };
-//   response.render("urls_show", templateVars);
-// })
-
-
 app.listen(PORT, () => {
   console.log(`Example app is listening on port ${PORT}`);
 });
