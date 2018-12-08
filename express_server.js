@@ -167,13 +167,6 @@ app.listen(PORT, () => {
   console.log(`Example app is listening on port ${PORT}`);
 });
 
-
-
-
-
-
-
-
 function randomString() {
   var random = '';
   var stringNum = 'abcdefghijklmnopqrstuvwxyz0123456789'
