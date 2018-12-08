@@ -4,9 +4,7 @@
   <title></title>
 </head>
 <body>
-
     <% if (user) { %>
-
       <form method="POST" action="/urls/logout">
       Welcome <strong><%= user.email %></strong>
       <input type="submit" value="Logout">
@@ -16,6 +14,7 @@
       <a href="/login">login</a>
       <a href="/register">register</a>
     <% } %>
+
 </body>
 </html>
 

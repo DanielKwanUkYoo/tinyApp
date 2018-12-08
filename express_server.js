@@ -13,31 +13,28 @@ var users = {
     id: "userRandomID",
     email: "user@example.com",
     password: "purple-monkey-dinosaur"
-  },
-  "user2RandomID": {
-    id: "user2RandomID",
-    email: "user2@example.com",
-    password: "dishwasher-funk"
   }
 }
 
 
 var urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "userRandomID": {
+    "b2xVn2": "http://www.lighthouselabs.ca",
+    "9sm5xK": "http://www.google.com"
+  }
 
 };
 
 //url pg
 app.get("/urls", (request, response) => {
-  let userId = request.cookies["user_id"];
-  let userObject = users[userId];
+  let userID = request.cookies["user_id"];
+  let userObject = users[userID];
   let templateVars = {
-    urls: urlDatabase,
+    urls: urlDatabase[userID],
     user: userObject,
   };
   response.render("urls_index", templateVars);
-  // console.log(request.cookies.user_id);
+
 });
 
 app.get("/login", (request, response) => {
@@ -46,16 +43,23 @@ app.get("/login", (request, response) => {
 
 //client input pg
 app.get("/urls/new", (request, response) => {
-  // const username = request.cookies["username"];
   let templateVars = { user: request.cookies["user_id"] };
-  response.render("urls_new", templateVars);
+  if (request.cookies["user_id"]) {
+    response.render("urls_new", templateVars);
+  } else {
+    response.redirect("/login")
+  }
 });
 
 //after input generate random string
-app.post("/urls/new", (request, response) => {
+app.post("/urls", (request, response) => {
+  const userID = request.cookies["user_id"]
   const shortRandomURL = randomString();
-  urlDatabase[shortRandomURL] = request.body.longURL;
-  response.redirect("/urls");
+  const userInputLong = request.body.longURL
+  if (userID) {
+    urlDatabase[userID][shortRandomURL] = userInputLong;
+    response.redirect("/urls");
+  }
 
 })
 
@@ -80,14 +84,17 @@ app.post("/login", (request, response) => {
       response.cookie("user_id", existingUser.id);
       response.redirect("/urls");
     } else {
-    response.status(400).end();
+      response.status(400).end();
     }
+  } else {
+    response.status(400).end();
   }
 })
 
 //logout clearcookies
 app.post("/urls/logout", (request, response) => {
   response.clearCookie("user_id"); // clearing cookies
+
   response.redirect("/urls");
 })
 
@@ -122,6 +129,7 @@ app.post("/register", (request, response) => {
       email: userEmail,
       password: userPass
     };
+    urlDatabase[userID] = {};
     users[userID] = register
     response.cookie("user_id", userID);
     response.redirect("/urls");
@@ -132,26 +140,67 @@ app.post("/register", (request, response) => {
 
 //Delete
 app.post("/urls/:id/delete", (request,response) => {
-  delete urlDatabase[request.params.id];
+  const userID = request.cookies["user_id"]
+  const id = request.params.id
+  delete urlDatabase[userID][id]
   response.redirect("/urls");
 })
 
 //Edit/Add
 app.post("/urls/:id", (request,response) => {
-  urlDatabase[request.params.id] = request.body.newURL;
+  const userID = request.cookies["user_id"]
+  urlDatabase[userID][request.params.id] = request.body.newURL;
   response.redirect("/urls");
 })
 
+// var urlDatabase = {
+//   "userRandomID": {
+//     "b2xVn2": "http://www.lighthouselabs.ca",
+//     "9sm5xK": "http://www.google.com"
+//   }
+
+
+
 app.get("/u/:shortURL", (request, response) => {
-  const longURL = urlDatabase[request.params.shortURL];
-  response.redirect(longURL);
+  const shortRandomURL = request.params.shortURL;
+  const userID = request.cookies["user_id"];
+  console.log(urlDatabase);
+  let keyFound = ""
+  for (owner in urlDatabase) {
+    if (userID === owner) {
+      for (data in urlDatabase[owner]) {
+        if (data === shortRandomURL) {
+          response.redirect(urlDatabase[owner][data])
+          // response.redirect(data[shortRandomURL]);
+        }
+      }
+    }
+  }
+  // }  console.log(owner)
+  //   if (keyFound === owner) {
+  //     for (data in urlDatabase[owner]) {
+
+  //       if (data === shortRandomURL) {
+  //         console.log(data[shortRandomURL])
+  //         response.redirect(data[shortRandomURL])
+  //       }
+  //     }
+  //   }
+
+
+
+  // }
+  // if (request.params.id === urlDatabase[userID]) {
+  //   response.redirect(longURL)
+  // }
+
+  // response.redirect(longURL);
 })
 
 //browser dir
 app.get("/urls/:id", (request, response) => {
   const username = request.cookies["username"];
   let templateVars = { shortURL: request.params.id,
-                       dataKey: urlDatabase,
                        user:request.cookies["user_id"]
                      };
   response.render("urls_show", templateVars);

@@ -9,19 +9,27 @@
 
 </header>
 <body>
-    <ul>
-      <% for (var link in urls) { %>
-        <li>
-
-          <form method="POST" action="/urls/<%= link %>/delete">
-            <%= link + ': '+ urls[link] %>
-            <a href="/urls/<%= link %>"> edit</a>
-            <input type="submit" value="delete">
-
-          </form>
+    <h2><strong>Welcome to TinyApp!!</strong></h2>
+        <% for (var link in urls) { %>
+          <% if (user) { %>
+          <ul>
+            <li>
+              <form method="POST" action="/urls/<%= link %>/delete">
+              <%= link + ' : ' %> <a href="/u/<%= link %>">
+              <%= urls[link] %> </a> &nbsp
+              <a href="/urls/<%= link %>">edit</a>
+              <input type="submit" value="delete">
+              </form>
+            </li>
+          </ul>
+        <% } else { %>
+        <li><%= link + ' : ' %> <a href="/u/<%= link %>">
+            <%= urls[link] %></a>
         </li>
-      <% } %>
-    </ul>
-   <a href="/urls/new"> Add New Page </a>
+        <% } %>
+        <% } %>
+    <form action="/urls/new" method="GET" name="AddNew">
+      <input type="submit" value=AddNew>
+    </form>
 </body>
 </html>
