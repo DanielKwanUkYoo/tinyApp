@@ -196,11 +196,15 @@ app.get("/u/:shortURL", (request, response) => {
 
 //Edit page
 app.get("/urls/:id", (request, response) => {
-  const username = request.cookies["username"];
+  const userID = request.cookies["user_id"];
   let templateVars = { shortURL: request.params.id,
                        user:request.cookies["user_id"]
                      };
-  response.render("urls_show", templateVars);
+  if (userID) {
+    response.render("urls_show", templateVars);
+  } else {
+    response.render("urls_login")
+  }
 })
 
 
