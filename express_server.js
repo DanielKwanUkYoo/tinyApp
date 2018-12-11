@@ -9,14 +9,44 @@ app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 
-//Database
-var users = {};
 
-var urlDatabase = {};
+// function to create random shortURL
+function randomString() {
+  let random = '';
+  const stringNum = 'abcdefghijklmnopqrstuvwxyz0123456789'
+  for (var i = 0; i < 6; i++) {
+    random += stringNum.charAt(Math.floor(Math.random() * stringNum.length))
+  }
+  return random;
+}
+
+//Database
+let users = {};
+
+let urlDatabase = {};
+
+// Get /
+app.get("/", (request,response) => {
+  const userID = request.cookies["user_id"];
+  let userObject = users[userID];
+  let shortUrls = [];
+
+  let templateVars = {
+    urls: urlDatabase[userID],
+    shortUrl: shortUrls,
+    user: userObject,
+  };
+
+  if (userID) {
+    response.render("urls_index", templateVars)
+  } else {
+    response.render("urls_login")
+  }
+})
 
 //Index Page
 app.get("/urls", (request, response) => {
-  let userID = request.cookies["user_id"];
+  const userID = request.cookies["user_id"];
   let userObject = users[userID];
   let shortUrls = [];
 
@@ -69,7 +99,7 @@ app.post("/login", (request, response) => {
     return;
   }
 
-  var existingUser = false;
+  let existingUser = false;
   for (var id in users) {
     if (userEmail === users[id]["email"]) {
       existingUser = users[id];
@@ -109,7 +139,7 @@ app.post("/register", (request, response) => {
     return;
   }
 
-  var existingUser = false;
+  let existingUser = false;
   for (var id in users) {
     if (userEmail === users[id]["email"]) {
       existingUser = users[id];
@@ -144,6 +174,7 @@ app.post("/urls/:id/delete", (request,response) => {
 app.post("/urls/:id", (request,response) => {
   const userID = request.cookies["user_id"];
   urlDatabase[userID][request.params.id] = request.body.newURL;
+
   response.redirect("/urls");
 });
 
@@ -153,7 +184,7 @@ app.get("/u/:shortURL", (request, response) => {
   const userID = request.cookies["user_id"];
   let keyFound = "";
   for (owner in urlDatabase) {
-    if (userID === owner) {
+    if (userID === owner || !userID) {
       for (data in urlDatabase[owner]) {
         if (data === shortRandomURL) {
           response.redirect(urlDatabase[owner][data])
@@ -177,11 +208,3 @@ app.listen(PORT, () => {
   console.log(`Example app is listening on port ${PORT}`);
 });
 
-function randomString() {
-  var random = '';
-  var stringNum = 'abcdefghijklmnopqrstuvwxyz0123456789'
-  for (var i = 0; i < 6; i++) {
-    random += stringNum.charAt(Math.floor(Math.random() * stringNum.length))
-  }
-  return random;
-}

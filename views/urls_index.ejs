@@ -22,17 +22,14 @@
               </form>
             </li>
           </ul>
-        <% } %>
+          <% } %>
         <% } %>
     <form action="/urls/new" method="GET" name="AddNew">
       <input type="submit" value=AddNew>
     </form>
-    <p>ShortUrls!</p>
-    <hr>
-    <% shortUrl.forEach(function (element) { %>
-
+      <p>ShortUrls!</p><hr>
+      <% shortUrl.forEach(function (element) { %>
     <h4><a href="/u/<%= element %>"><%= element %></a></h4>
-    <% }) %>
-
+      <% }) %>
 </body>
 </html>
