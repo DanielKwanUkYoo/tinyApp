@@ -61,7 +61,12 @@ app.get("/urls", (request, response) => {
     shortUrl: shortUrls,
     user: userObject,
   };
-  response.render("urls_index", templateVars);
+  if (userID) {
+    response.render("urls_index", templateVars);
+  } else {
+    response.status(400).end();
+  }
+
 });
 
 app.get("/login", (request, response) => {
@@ -153,14 +158,14 @@ app.post("/register", (request, response) => {
       id: userID,
       email: userEmail,
       password: bcrypt.hashSync(request.body.password, 12)
-    };
+  }
 
     urlDatabase[userID] = {};
-    users[userID] = register
+    users[userID] = register;
     response.cookie("user_id", userID);
     response.redirect("/urls");
   }
-});
+})
 
 //Delete added websites
 app.post("/urls/:id/delete", (request,response) => {
@@ -176,7 +181,7 @@ app.post("/urls/:id", (request,response) => {
   urlDatabase[userID][request.params.id] = request.body.newURL;
 
   response.redirect("/urls");
-});
+})
 
 //shorURL gets redirected to webpage
 app.get("/u/:shortURL", (request, response) => {
@@ -192,7 +197,7 @@ app.get("/u/:shortURL", (request, response) => {
       }
     }
   }
-});
+})
 
 //Edit page
 app.get("/urls/:id", (request, response) => {
@@ -201,7 +206,7 @@ app.get("/urls/:id", (request, response) => {
                        user:request.cookies["user_id"]
                      };
   if (userID) {
-    response.render("urls_show", templateVars);
+    response.render("urls_show", templateVars)
   } else {
     response.render("urls_login")
   }
